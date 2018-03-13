@@ -1,0 +1,10 @@
+location /name-of-service { # static assets / flat files served internally
+    set $host_service service; # set only within location{} block
+    set $host_product res; # set only within location{} block
+	root /data/web/${host_lane}/product/service-content/app/public/;
+}
+location /api/v1/name-of-service/ {
+    set $host_service service; # set only within location{} block
+    set $host_product res; # set only within location{} block
+	proxy_pass http://product-service-${host_lane}${request_uri};
+}

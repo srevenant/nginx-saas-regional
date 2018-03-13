@@ -1,0 +1,38 @@
+user  nginx;
+
+worker_processes  1;
+worker_rlimit_nofile 327679;
+
+error_log  /data/nginx/log/error.log warn;
+pid        /var/run/nginx.pid;
+
+events {
+    worker_connections  4000;
+    multi_accept on;
+}
+
+http {
+    include       /etc/nginx/mime.types;
+    default_type  application/octet-stream;
+
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"'
+                      ' t=$request_time ut=$upstream_response_time'
+                      ' env=$host_env tenant=$host_tenant'
+                      ' up=$upstream_addr ssl=$ssl_protocol';
+
+    include /app/nginx/include/tuning.conf;
+
+    # static upstream definitions vary by regional stack
+    # these should be expanded at deploy time `sed -e s/%REGION%/your-region-name/ nginx.conf.in > nginx.conf`
+    # for internal reference:
+    #     @REGION@=%REGION%
+    #     @ENVIRON@=%ENVIRON%
+    include /app/nginx/upstream-%REGION%.d/*.conf;
+    include /data/nginx/upstream-dynamic.d/*.conf;
+    include /app/nginx/server.d/*.conf;
+    include /app/nginx/http-%ENVIRON%.d/*.conf;
+    include /app/nginx/http-%REGION%-%ENVIRON%.d/*.conf;
+}
+
