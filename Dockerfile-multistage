@@ -1,13 +1,18 @@
+# stage 1
 FROM alpine:latest
+
+COPY my-node-code /app
+RUN npm build && do stuff to create content
+
+# stage 2
+FROM alpine:latest
+
+COPY --from=0 /app/assets/public /data/web/site
+COPY . /app/nginx
 
 # bring in nginx
 RUN apk --no-cache add nginx && mkdir -p /data/{nginx,web}
 
-# base configs
-COPY . /app/nginx
-
-# multi-stage build could be valuable here; see Dockerfile-multistage
-# COPY content /data/web/{name}
 
 ARG BUILD_VERSION
 

@@ -7,6 +7,10 @@
 
       sed -e 's/%ENVIRON%/prd/;s/%REGION%/region1/g' nginx.conf.in > nginx.conf
 
+* SSL: Your startup should bring in the ssl data, including keys and dhparam for each node.  You can do this with Reflex, or your own tooling.
+
+    - Generate dhparam and store ahead of time:  openssl dhparam -out dhparam.pem 4096
+
 * On installation this code base is put into /app/nginx and /data/nginx is where content is read from
 
 * /app/nginx paths: (all but locations come in via nginx.conf)
@@ -20,9 +24,12 @@
     - location.d/                 - location{} definitions, brought in by servers
     - upstream-{REGION}.d/        - upstream{} definitions, brought in by location{}
 
-* /data/nginx paths:
+* /data/nginx/ paths:
 
     - upstream-dynamic.d/         - if you have an agent which makes nginx downstream, put them here
+    - log/                        - optional - if you are not in a container change to log here
+
+* /data/web/{name} paths:         - used for static content (see Dockerfile and `location.d/*`)
 
 ## Using in Docker
 
