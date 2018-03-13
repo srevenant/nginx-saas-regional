@@ -4,6 +4,7 @@ services:
     image: my-nginx
     build: .
     hostname: "nginx-{{.Task.Slot}}"
+    read_only: true
     environment:
       - REFLEX_SERVICE=my-nginx
     ports:
@@ -13,6 +14,8 @@ services:
       - published: 5081
         target: 80
         mode: host
+    volumes: # root is read-only, this is writable
+      - var-run:/var/run
     deploy:
       placement:
         constraints:
@@ -39,3 +42,6 @@ services:
 #    external: true
 #  reflex-url:
 #    external: true
+#
+volumes:
+  var-run:

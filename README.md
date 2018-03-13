@@ -57,8 +57,4 @@ You will also need to review the configs and get things straightened to match yo
 
 ### Reference the docker-compose.xml
 
-You can bring in data volumes.
-
-# Todo:
-
- * read-only with docker-compose
+You can bring in data volumes
