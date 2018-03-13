@@ -1,6 +1,10 @@
-# nginx config supporting multi-site multi-region deployment
+# nginx read-only enterprise container
+
+Read-Only enterprise deployment of nginx supporting multiple regions, paths, servers and upstreams.
 
 ## Conventions
+
+* Container is built read-only, with writable data put into /run
 
 * Two common variables: ENVIRON and REGION are defined, and files are included/expanded from that,
   by adjusting `nginx.conf.in` at runtime, replacing %ENVIRON% and %REGION% and writing as nginx.conf
@@ -9,6 +13,7 @@
 
 * SSL: Your startup should bring in the ssl data, including keys and dhparam for each node.  You can do this with Reflex, or your own tooling.
 
+    - put your runtime data into /run
     - Generate dhparam and store ahead of time:  openssl dhparam -out dhparam.pem 4096
 
 * On installation this code base is put into /app/nginx and /data/nginx is where content is read from
@@ -59,8 +64,7 @@ You will also need to review the configs and get things straightened to match yo
 
 	docker-compose up
 
-
-	docker swarm deploy -c docker-compose.yml nginx
+	docker stack deploy -c docker-compose.yml web
 
 ### Reference the docker-compose.xml
 

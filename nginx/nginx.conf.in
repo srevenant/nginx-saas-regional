@@ -22,15 +22,14 @@ http {
     include       /etc/nginx/mime.types;
     default_type  application/octet-stream;
 
-   # for container
-    access_log  /dev/stdout  main;
-
+    # for container
     log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
                       '$status $body_bytes_sent "$http_referer" '
                       '"$http_user_agent" "$http_x_forwarded_for"'
                       ' t=$request_time ut=$upstream_response_time'
                       ' env=$host_env tenant=$host_tenant'
                       ' up=$upstream_addr ssl=$ssl_protocol';
+    access_log  /dev/stdout  main;
 
     include /app/nginx/include/tuning.conf;
 

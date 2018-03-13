@@ -1,10 +1,16 @@
 FROM alpine:latest
 
 # bring in nginx
-RUN apk --no-cache add nginx && mkdir -p /data/{nginx,web}
+RUN apk --no-cache add nginx &&\
+    mkdir -p /data/{nginx,web} &&\
+    ln -sf /dev/stderr /var/lib/nginx/logs/error.log &&\
+    ln -sf /dev/stdout /var/lib/nginx/logs/access.log &&\
+    ln -s /var/log/nginx /var/lib/nginx/logs &&\
+    ln -s /var/tmp/nginx /var/lib/nginx/tmp
+    #ln -s /run/nginx /var/run/nginx &&\
 
 # base configs
-COPY . /app/nginx
+COPY nginx /app/nginx/
 
 # multi-stage build could be valuable here; see Dockerfile-multistage
 # COPY content /data/web/{name}

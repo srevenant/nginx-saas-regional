@@ -15,14 +15,17 @@ services:
         target: 80
         mode: host
     volumes: # root is read-only, this is writable
-      - var-run:/var/run
+      - type: volume
+        source: run
+        target: /run
+        read_only: false
     deploy:
-      placement:
-        constraints:
-          - node.role == worker
-          - engine.labels.com.example.zone == dmz
-          - engine.labels.com.example.region == p1
-      replicas: 3
+#      placement:
+#        constraints:
+#          - node.role == worker
+#          - engine.labels.com.example.zone == dmz
+#          - engine.labels.com.example.region == p1
+#      replicas: 3
       update_config:
         parallelism: 1
         delay: 30s
@@ -44,4 +47,4 @@ services:
 #    external: true
 #
 volumes:
-  var-run:
+  run:
