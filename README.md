@@ -1,6 +1,6 @@
 # nginx config supporting multi-site multi-region deployment
 
-Conventions:
+## Conventions
 
 * Two common variables: ENVIRON and REGION are defined, and files are included/expanded from that,
   by adjusting `nginx.conf.in` at runtime, replacing %ENVIRON% and %REGION% and writing as nginx.conf
@@ -23,3 +23,33 @@ Conventions:
 * /data/nginx paths:
 
     - upstream-dynamic.d/         - if you have an agent which makes nginx downstream, put them here
+
+## Using in Docker
+
+By default Dockerfile assumes the use of [Reflex](https://reflex.cold.org).  You can change the
+entrypoint to suite:
+
+    ENTRYPOINT /app/nginx/entrypoint.sh
+
+### Build:
+
+    docker build -f Dockerfile -t nginx-ssl .
+
+### Run:
+
+    docker run  -d --name=nginx-ssl \
+        -e PYTHONUNBUFFERED=true \
+        -e REFLEX_APIKEY=$REFLEX_APIKEY \
+        -e REFLEX_URL=$REFLEX_URL \
+         -e REFLEX_SERVICE=nginx-ssl-p1 \
+         --publish 8000:80 \
+         --publish 8443:443 \
+         nginx-ssl
+
+### Reference the docker-compose.xml
+
+You can bring in local volumes for customizability:
+
+    *:/etc/nginx/http.d
+    *:/etc/nginx/server.d
+

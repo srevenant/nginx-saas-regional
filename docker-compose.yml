@@ -1,0 +1,41 @@
+version: "3.2"
+services:
+  nginx:
+    image: my-nginx
+    build: .
+    hostname: "nginx-{{.Task.Slot}}"
+    environment:
+      - REFLEX_SERVICE=my-nginx
+    ports:
+      - published: 5080
+        target: 80
+        mode: ingress
+      - published: 5081
+        target: 80
+        mode: host
+    deploy:
+      placement:
+        constraints:
+          - node.role == worker
+          - engine.labels.com.example.zone == dmz
+          - engine.labels.com.example.region == p1
+      replicas: 3
+      update_config:
+        parallelism: 1
+        delay: 30s
+        max_failure_ratio: 0
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+#    secrets:
+#      - source: frontend-apikey
+#        target: REFLEX_APIKEY
+#      - source: reflex-url
+#        target: REFLEX_URL
+#secrets:
+#  web-frontend-prd-apikey:
+#    external: true
+#  reflex-url:
+#    external: true
