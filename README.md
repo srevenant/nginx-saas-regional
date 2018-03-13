@@ -31,9 +31,13 @@ entrypoint to suite:
 
     ENTRYPOINT /app/nginx/entrypoint.sh
 
+You will also need to review the configs and get things straightened to match your environment
+(notably SSL)
+
 ### Build:
 
     docker build -f Dockerfile -t nginx-ssl .
+	docker-compose build
 
 ### Run:
 
@@ -46,10 +50,15 @@ entrypoint to suite:
          --publish 8443:443 \
          nginx-ssl
 
+	docker-compose up
+
+
+	docker swarm deploy -c docker-compose.yml nginx
+
 ### Reference the docker-compose.xml
 
-You can bring in local volumes for customizability:
+You can bring in data volumes.
 
-    *:/etc/nginx/http.d
-    *:/etc/nginx/server.d
+# Todo:
 
+ * read-only with docker-compose
